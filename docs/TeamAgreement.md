@@ -1,4 +1,4 @@
-# Team JMSK
+# Hive BBS
 
 ## **Members**: Tray Chea, Harvey Lucas, Tim Ma, Stefanie Riehle
 
