@@ -4,8 +4,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan')
 
-const v1Routes = require ('./routes/api-routes.js')
-const v2Routes = require ('./routes/user-routes.js')
+const readRoutes = require ('./routes/api-routes.js')
+const aclRoutes = require ('./routes/user-routes.js')
 const authRoutes = require ('./auth/auth-routes.js')
 
 const app = express();
@@ -18,8 +18,8 @@ app.use(express.urlencoded({
   extended: true
 }))
 
-app.use('/api/v1', v1Routes);
-app.use('/api/v2', v2Routes);
+app.use('/api/readOnly', readRoutes);
+app.use('/api/acl', aclRoutes);
 app.use('/api', authRoutes)
 
 
