@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { posting } = require('../models/posting.js');
+const { posting } = require('../models');
 
 const router = express.Router();
 

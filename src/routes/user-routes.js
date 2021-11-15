@@ -17,7 +17,9 @@ router.delete('/posting/:id', bearerHandler, aclHandler('delete'), handleDeleteP
 async function handleCreatePosting(req, res) {
   try {
     let obj = req.body;
-    let newPosting = await posting.create(obj);
+    console.log('****************', req.user.dataValues.username);
+    let sellerObj = {"seller":`${req.user.dataValues.username}`, ...obj}
+    let newPosting = await posting.create(sellerObj);
     res.status(201).json(newPosting);
   } catch (err) {
     console.error(err)
