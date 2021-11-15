@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET || 'testingsecret';
 
 const userModel = (sequelize, DataTypes) => {
-  const model = sequelize.define('Users', {
+  const model = sequelize.define('users', {
     username: {
       type: DataTypes.STRING,
       require: true,
@@ -25,10 +25,6 @@ const userModel = (sequelize, DataTypes) => {
       type: DataTypes.VIRTUAL,
       get() {
         return jwt.sign({ username: this.username }, SECRET);
-      },
-      set(tokenObj) {
-        let token = jwt.sign(tokenObj, SECRET);
-        return token;
       }
     },
     capabilities: {
