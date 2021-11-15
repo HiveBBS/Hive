@@ -80,7 +80,6 @@ CRUD Item Data Flow
 
 ## Non-Functional Requirements
 
-1. Security
-   We will be adding authentication using base64, and authorization using JWT.
+1. Security - we will be adding authentication using base64, and authorization using JWT.
 
-2. Testability
+2. Testability - we will be using Jest to write tests for our CRUD operations
