@@ -1,4 +1,3 @@
-"use strict";
 
 "use strict";
 
@@ -6,23 +5,36 @@ const express = require("express");
 const bearerHandler = require("../auth/bearer.js");
 const aclHandler = require("../auth/acl.js");
 const socketService = require("../socket.js");
+const dataModules = require("../models");
+
 const {posting} = require('../models/index');
+
 const router = express.Router();
 
+router.param("model", (req, res, next) => {
+  const modelName = req.params.model;
+  if (dataModules[modelName]) {
+    req.model = dataModules[modelName];
+    next();
+  } else {
+    next("Invalid Model");
+  }
+});
+
 router.post(
-  "/posting",
+  "/:model",
   bearerHandler,
   aclHandler("create"),
   handleCreatePosting
 );
 router.put(
-  "/posting/:id",
+  "/:model/:id",
   bearerHandler,
   aclHandler("update"),
   handleUpdatePosting
 );
 router.delete(
-  "/posting/:id",
+  "/:model/:id",
   bearerHandler,
   aclHandler("delete"),
   handleDeletePosting
@@ -31,9 +43,9 @@ router.delete(
 async function handleCreatePosting(req, res) {
   try {
     let obj = req.body;
-    // console.log("****************", req.user.dataValues.username);
+
     let sellerObj = { seller: `${req.user.dataValues.username}`, ...obj };
-    let newPosting = await posting.create(sellerObj);
+    let newPosting = await req.model.create(sellerObj);
     socketService("update", {
       message: "New item for sale",
       ...newPosting.dataValues,
@@ -48,8 +60,9 @@ async function handleUpdatePosting(req, res) {
   try {
     const id = req.params.id;
     const obj = req.body;
+
     let updator = req.user.dataValues.username;
-    let oldPost = await posting.findOne({where: {id}});
+    let oldPost = await req.model.findOne({where: {id}});
     let poster = oldPost.dataValues.seller;
 
     // console.log("**********************");
@@ -57,7 +70,7 @@ async function handleUpdatePosting(req, res) {
     // console.log('updator', updator);
     // console.log('poster', poster);
     if (updator === poster) {
-      let updatedPosting = await posting.update(obj, { where: { id } });
+      let updatedPosting = await req.model.update(obj, { where: { id } });
       res.status(200).json(updatedPosting);
     } else {
       res.status(403).send('Invalid user');
@@ -71,15 +84,17 @@ async function handleUpdatePosting(req, res) {
 async function handleDeletePosting(req, res) {
   try {
     let id = req.params.id;
+
     let deleter = req.user.dataValues.username;
-    let oldPost = await posting.findOne({where: {id}});
+    let oldPost = await req.model.findOne({where: {id}});
     let poster = oldPost.dataValues.seller;
     if (deleter === poster) {
-      let deletedPosting = await posting.destroy({ where: { id } });
+      let deletedPosting = await req.model.destroy({ where: { id } });
       res.status(200).json(deletedPosting);
     } else {
       res.status(403).send('Invalid user');
     }
+
   } catch (err) {
     console.error(err);
   }
