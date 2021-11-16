@@ -60,9 +60,10 @@ async function handleUpdatePosting(req, res) {
       let updatedPosting = await posting.update(obj, { where: { id } });
       res.status(200).json(updatedPosting);
     } else {
-      throw new Error('Invalid user');
+      res.status(403).send('Invalid user');
     }
   } catch (err) {
+    
     console.error(err);
   }
 }
@@ -77,7 +78,7 @@ async function handleDeletePosting(req, res) {
       let deletedPosting = await posting.destroy({ where: { id } });
       res.status(200).json(deletedPosting);
     } else {
-      throw new Error('Invalid user');
+      res.status(403).send('Invalid user');
     }
   } catch (err) {
     console.error(err);

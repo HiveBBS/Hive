@@ -7,6 +7,8 @@ const request = supertest(app.server);
 const base64 = require('base-64');
 
 
+
+
 beforeAll(async () => {
   await db.sync();
 });
@@ -23,6 +25,7 @@ afterAll(async () => {
 // });
 
 describe('Testing server router', () => {
+  let user1Token = 0;
   it('Should creat a user', async () => {
     let response = await request.post('/api/signup').send({
       username: 'Tim',
@@ -41,12 +44,6 @@ describe('Testing server router', () => {
     expect(response.status).toBe(200);
   })
 
-  // it('Should attach a token on find', async() => {
-  //   let newUser = await user.findOne({ where: { username: userInfo.username}});
-  //   expect(newUser.username).toBe(userInfo.username);
-  //   expect(newUser.token).toBeTruthy();
-  //   expect(jwt.decode(newUser.token).username).toEqual(userInfo.username);
-  // });
   it('Should create a post through POST /api/acl/posting', async () => {
     const newUser = await request.post('/api/signup').send({ 
       username: 'Timma',
@@ -66,17 +63,80 @@ describe('Testing server router', () => {
       "location": "Seattle",
       "condition": "good"
     });
-
+    user1Token = token;
+    
     expect(response.status).toBe(201);
     expect(response.body.name).toBe('bike');
   })
 
   it('Should read all posts through GET /api/readOnly/posting', async () => {
     let response = await request.get('/api/readOnly/posting');
-    // console.log('###############');
-    // console.log(JSON.parse(response.res.text));
+   
+    console.log(response.res.text);
     expect(response.status).toBe(200);
     expect(response).toBeTruthy();
     expect(typeof response.body).toEqual('object');
   })
+
+  it('Should not allow anyone besides the creator of the post to update', async () => {
+    const user2 = await request.post('/api/signup').send({ 
+      username: 'Tim2',
+      password: 'test',
+      role: 'user'
+    });
+    const userObject = user2.body.user;
+    const token = userObject.token;
+  
+    let response = await request.put('/api/acl/posting/1').set({
+      Authorization: `Bearer ${token}`
+    }).send({
+      "name": "toy bike"
+    });
+
+    expect(response.error).toBeTruthy();
+  })
+
+  it('Should allow only  the creator of the post to update', async () => {
+    
+    const token = user1Token;
+  
+    let response = await request.put('/api/acl/posting/1').set({
+      Authorization: `Bearer ${token}`
+    }).send({
+      "name": "toy bike"
+    });
+    let updated = await request.get('/api/readOnly/posting');
+   
+    console.log(updated.res.text);
+
+    expect(response.status).toBe(200);
+  })
+
+  it('Should not allow anyone besides the creator of the post to delete', async () => {
+    const user3 = await request.post('/api/signup').send({ 
+      username: 'Tim3',
+      password: 'test',
+      role: 'user'
+    });
+    const userObject = user3.body.user;
+    const token = userObject.token;
+    let response = await request.delete('/api/acl/posting/1').set({
+      Authorization: `Bearer ${token}`
+    });
+
+    expect(response.error).toBeTruthy();
+  })
+
+  // it('Should allow the poster to only delete their own posts', async () => {
+		
+  //   const token = user1Token;
+
+	// 	let response = await request.delete('./api/acl/posting/1').set({
+	// 		Authorization: `Bearer ${token}`
+	// 	});
+	// 	expect(response.status).toBe(200);
+  
+	// })
+
+
 });
