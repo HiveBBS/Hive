@@ -30,6 +30,7 @@ async function handleUpdatePosting(req, res) {
   try {
     const id = req.params.id;
     const obj = req.body;
+    console.log('**********************', id, obj)
     let updatedPosting = await posting.update(obj, {where: { id }});
     res.status(200).json(updatedPosting);
   } catch (err) {
