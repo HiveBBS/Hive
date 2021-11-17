@@ -9,7 +9,19 @@ const aclRoutes = require ('./routes/user-routes.js')
 const authRoutes = require ('./auth/auth-routes.js')
 
 const app = express();
+const { Server } = require('socket.io');
+const server = require('http').createServer(app);
+const io = new Server(server);
+const socketService = require('./socket.js');
+const emitEvent = socketService(io);
 
+const useEmitMiddleWare = (req, res, next) => {
+  console.log('*************** THIS **********', emitEvent);
+  req.emitEvent = emitEvent;
+  next();
+}
+
+app.use(useEmitMiddleWare);
 app.use(cors());
 app.use(morgan('dev'));
 
@@ -28,8 +40,8 @@ app.get('/', (req, res) => {
 });
 
 module.exports = {
-  server: app,
+  server: server,
   start: port => {
-    app.listen(port, () => console.log('Server is up at port', port));
+    server.listen(port, () => console.log('Server is up at port', port));
   },
 };

@@ -3,7 +3,6 @@
 const express = require("express");
 const bearerHandler = require("../auth/bearer.js");
 const aclHandler = require("../auth/acl.js");
-const socketService = require("../socket.js");
 const dataModules = require("../models");
 
 const router = express.Router();
@@ -43,7 +42,7 @@ async function handleCreatePosting(req, res) {
 
 		let sellerObj = { seller: `${req.user.dataValues.username}`, ...obj };
 		let newPosting = await req.model.create(sellerObj);
-		socketService("update", {
+		req.emitEvent("update", {
 			message: "New item for sale",
 			...newPosting.dataValues,
 		});
