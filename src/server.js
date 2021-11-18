@@ -16,7 +16,6 @@ const socketService = require('./socket.js');
 const emitEvent = socketService(io);
 
 const useEmitMiddleWare = (req, res, next) => {
-  console.log('*************** THIS **********', emitEvent);
   req.emitEvent = emitEvent;
   next();
 }

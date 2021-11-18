@@ -7,7 +7,6 @@ const { users } = require("../models");
 const basicAuth = require("./basic.js");
 
 authRouter.post("/signup", async (req, res, next) => {
-  console.log('********************** HERE ')
   try {
     let userRecord = await users.create(req.body);
     const output = {

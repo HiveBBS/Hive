@@ -39,10 +39,10 @@ router.delete(
 async function handleCreatePosting(req, res) {
 	try {
 		let obj = req.body;
-
+		let category = req.params.model;
 		let sellerObj = { seller: `${req.user.dataValues.username}`, ...obj };
 		let newPosting = await req.model.create(sellerObj);
-		req.emitEvent("update", {
+		req.emitEvent(category, {
 			message: "New item for sale",
 			...newPosting.dataValues,
 		});
