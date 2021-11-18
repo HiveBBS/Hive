@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "jest --verbose --coverage",
-    "start": "node index.js"
+    "start": "NODE_ENV=production node index.js",
+    "init:config": "sequelize init:config",
+    "db:create": "sequelize db:create"
   },
   "repository": {
     "type": "git",
