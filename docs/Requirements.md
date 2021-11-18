@@ -2,63 +2,58 @@
 
 ## Vision
 
-*What is the vision of this product?*
+_What is the vision of this app?_
 
-* To provide Users with a unified, centralized place to keep track of all the shows/entertainment media they want to keep up with.
-
-*What pain point does this project solve?*
-
-* Not being able to remember all of the various entertainment media you want to engage with when you are ready to partake.
-
-*Why should we care about your product?*
-
-* Because we've all had the struggle of sitting down to watch a movie and not being able to think of one, or getting invested in a series and then forgetting to check for a new season the following year, finishing a book and not being able to remember the great novel that our friend recommended that we read next.
+We want to create a bulletin board system. Users will be able to access a wide audience when posting items for sale, and can also subscribe to a variety of topics. When new posts are made within the subscribed topic, the user will receive a notification of the new posting.
 
 ## Scope (In/Out)
 
-IN - *What will your product do?*
+IN - _What will your app do?_
 
-* The web app will provide a centralized repository for the User to store their media choices.
-* The web app will provide basic information on the User's media choices
-* Users will be able to create thier own personalized profile
-* Users will be able to save their media choices
+-   The app will allow users to:
 
-OUT - *What will your product not do?*
+    -   sign up using base64 authentication
+    -   sign in using JWT authorization
+    -   post messages/items for sale
+    -   subscribe to a topic using socket.io
 
-* The web app will not be an IOS or Android app
-* The web app will not have a streaming capability built-in (you will not be able to watch your shows inside this app)
+-   The app will provide basic CRUD functionality
+-   Socket emit events will be triggered by new database posts
+-   Only the user posting the item can delete them item from the board
 
-### Minimum Viable Product vs
+OUT - _What will your app not do?_
 
-* Home page with Welcome message to orient new Users to the app
-* About Us page with bios for the app authors
-* TV Series page with separate cards for each film you add
-* Each card populates [name, genre, release year, description, streaming service; if active, next release] from an API
+-   This app will not process payment info to/from buyers/sellers
+-   This app will not host addresses for shipping purposes
+-   This app will not allow users to save posts
 
-### Stretch
+### Minimum Viable Product
 
-* Track multiple types of entertainment media
-  * Movies
-  * TV Series
-  * Music
-  * Books
-* Dedicted page for recommendations from friends
-* Ability to sort and filter saved items
-* Ability to reorder cards by dragging and dropping them
+The bulletin board system will allow a user to:
+
+-   sign up
+-   sign in
+-   subscribe to a channel or topic to receive notifications
+-   add an item for sale to a database that generates a message to subscribers
+
+### Stretch Goals
+
+-   Create multiple channels on a variety of topics
+-   Post a message to a message board
+-   Allow images to be included in message board postings
+-   Send a direct message to another user
 
 ## Functional Requirements
 
-For the purpose of this list "media" means movies, tv series, music albums or books.
-
-1. User can create a profile in which to save their media choices
-2. User can log in and log out of their profile
-3. User can search for media on the Frontend site which queries an API on the Backend. The API on the Backend queries third-party APIs
-4. User can create and delete media cards in a separate page dedicated to that media type
-5. User can read about the creators of the app in an About Us page
+1. User can sign up to create a profile
+1. User can log in and log out of their profile
+1. User can post, update, and delete items for sale
 
 ### Data Flow
 
-![item-search](./item-search-data-flow.png)
+<!-- Describe the flow of data in your application. Write out what happens from the time the user begins using the app to the time the user is done with the app. Think about the “Happy Path” of the application. Describe through visuals and text what requests are made, and what data is processed, in addition to any other details about how the user moves through the site. -->
+
+<!-- ![item-search](./item-search-data-flow.png)
 
 Item Search Data Flow
 
@@ -81,12 +76,10 @@ CRUD Item Data Flow
 * Frontend: User's item data is collected and forwarded to the Backend API. User requires authentication to use any Backend CRUD operations.
 * Backend: Routes the request and prepares the resource for CRUD operations.
 * Database: Based on the operation, the Database will CRUD the resource, returning success or failure to the Backend API.
-* Backend: Returns a token and CRUD status code to the Frontend.
+* Backend: Returns a token and CRUD status code to the Frontend. -->
 
 ## Non-Functional Requirements
 
-1. Security
-We are adding a login that associates a User to a profile. This will secure the User profile from unathourized access. This will be implemented with a simple login form with username and password with a token to Backend server. A stretch goal is to replace this simple form with Auth0.
+1. Security - we will be adding authentication using base64, and authorization using JWT.
 
-2. Maintainablility
-We are using component architecture with React. This will lower the effort of functional changes. The components source code is separated logically and physically on the file system so the team can maintain many components at the same time. This will make confllicts less likely, increasing maintainability.
+2. Testability - we will be using Jest to write tests for our CRUD operations
