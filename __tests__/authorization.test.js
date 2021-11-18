@@ -21,7 +21,7 @@ describe('Testing Authorization system', () => {
     expect(newUser.token).toBeTruthy();
     expect(newUser.role).toBe('user');
     expect(newUser.capabilities.includes('read')).toBeTruthy();
-    expect(newUser.capabilities.includes('delete')).toBeFalsy();
+    expect(newUser.capabilities.includes('delete')).toBeTruthy();
 
   });
 });
