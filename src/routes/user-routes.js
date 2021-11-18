@@ -3,7 +3,6 @@
 const express = require("express");
 const bearerHandler = require("../auth/bearer.js");
 const aclHandler = require("../auth/acl.js");
-const socketService = require("../socket.js");
 const dataModules = require("../models");
 
 const router = express.Router();
@@ -40,10 +39,10 @@ router.delete(
 async function handleCreatePosting(req, res) {
 	try {
 		let obj = req.body;
-
+		let category = req.params.model;
 		let sellerObj = { seller: `${req.user.dataValues.username}`, ...obj };
 		let newPosting = await req.model.create(sellerObj);
-		socketService("update", {
+		req.emitEvent(category, {
 			message: "New item for sale",
 			...newPosting.dataValues,
 		});
